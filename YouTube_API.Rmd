@@ -167,6 +167,6 @@ I wonder if I can use a LAPPLY to load multiple YouTube channels data.
 
 I wonder if I can make some of the code I use up top into functions.
 
-I need a tight research question.
+I need a tight research question. I will probably look at the fitness industry.
 
 
