@@ -32,3 +32,4 @@ Link Git & GitHub.
 
 ### Section 3 - Github & RStudio
 
+This document is now linked to Github.
