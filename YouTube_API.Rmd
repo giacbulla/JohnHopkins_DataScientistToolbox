@@ -1,0 +1,172 @@
+---
+title: "YouTube_API"
+author: "Giacomo Zacchia"
+date: '2022-12-31'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# YouTube API
+
+TUTURIAL 1: https://www.yuichiotsuka.com/youtube-data-extract-r/
+TUTURIAL 2: https://www.rpubs.com/statscol/youtube_data_in_r 
+TUTURIAL 3: https://medium.com/@tumuhimbisemoses/youtube-data-mining-experiences-of-using-r-1419e9aefcc5
+TUTURIALS: Saved as a PDF in Master Folder
+
+CHANNEL ID EXTRACTOR: https://commentpicker.com/youtube-channel-id.php 
+
+API WEBSITE: https://console.cloud.google.com/apis/library/youtube.googleapis.com?project=automated-lore-261623
+
+Restircted Key: AIzaSyBerKodKhkdaQ_udO--SBLEmwmCFXDuqa4
+
+```{r}
+
+#install.packages(c("httr", "jsonlite", "dplyr", "curl", "kableExtra", "ggplot2", "plotly","reshape2", "tuber"))
+library(httr)
+library(jsonlite)
+library(dplyr)
+library(curl)
+library(ggplot2)
+library(plotly)
+library(reshape2)
+library(kableExtra)
+library(tuber)
+
+```
+
+## Code
+
+Restircted Key: AIzaSyBerKodKhkdaQ_udO--SBLEmwmCFXDuqa4
+
+Rich Roll Channel ID: UCpjlh0e319ksmoOD7bQFSiw
+Andrew Huberman Channel ID: UC2D2CMWXMOVWx7giW1n3LIg
+Tom Bilyeu Channel ID: UCnYMOamNKLGVlJgRUbamveA
+
+```{r}
+
+key <- "AIzaSyBerKodKhkdaQ_udO--SBLEmwmCFXDuqa4"
+channel_id <- "UCpjlh0e319ksmoOD7bQFSiw"  # Rich Roll Channel ID
+user_id <- "@richroll"  # Rich Roll Username
+base <- "https://www.googleapis.com/youtube/v3/"
+
+```
+
+```{r}
+api_params <- 
+  paste(paste0("key=", key), 
+        paste0("id=", channel_id), 
+        "part=snippet,contentDetails,statistics",
+        sep = "&")
+api_call <- paste0(base, "channels", "?", api_params)
+api_result <- GET(api_call)
+json_result <- content(api_result, "text", encoding="UTF-8")
+```
+
+```{r}
+channel.json <- fromJSON(json_result, flatten = T)
+channel.df <- as.data.frame(channel.json)
+
+total_views <- channel.df$items.statistics.viewCount
+playlist_id <- channel.df$items.contentDetails.relatedPlaylists.uploads
+```
+
+```{r}
+# temporary variables
+nextPageToken <- ""
+upload.df <- NULL
+pageInfo <- NULL
+# Loop through the playlist while there is still a next page
+while (!is.null(nextPageToken)) {
+  # Construct the API call
+  api_params <- 
+    paste(paste0("key=", key), 
+          paste0("playlistId=", playlist_id), 
+          "part=snippet,contentDetails,status",
+          "maxResults=50",
+          sep = "&")
+  
+  # Add the page token for page 2 onwards
+  if (nextPageToken != "") {
+    api_params <- paste0(api_params,
+                         "&pageToken=",nextPageToken)
+  }
+  
+  api_call <- paste0(base, "playlistItems", "?", api_params)
+  api_result <- GET(api_call)
+  json_result <- content(api_result, "text", encoding="UTF-8")
+  upload.json <- fromJSON(json_result, flatten = T)
+  
+  nextPageToken <- upload.json$nextPageToken
+  pageInfo <- upload.json$pageInfo
+  
+  curr.df <- as.data.frame(upload.json$items)
+  if (is.null(upload.df)) {
+    upload.df <- curr.df
+  } else {
+    upload.df <- bind_rows(upload.df, curr.df)
+  }
+}
+
+```
+
+```{r}
+video.df<- NULL
+# Loop through all uploaded videos
+for (i in 1:nrow(upload.df)) {
+  # Construct the API call
+  video_id <- upload.df$contentDetails.videoId[i]
+  api_params <- 
+    paste(paste0("key=", key), 
+          paste0("id=", video_id), 
+          "part=id,statistics,contentDetails",
+          sep = "&")
+  
+  api_call <- paste0(base, "videos", "?", api_params)
+  api_result <- GET(api_call)
+  json_result <- content(api_result, "text", encoding="UTF-8")
+  video.json <- fromJSON(json_result, flatten = T)
+  
+  curr.df <- as.data.frame(video.json$items)
+  
+  if (is.null(video.df)) {
+    video.df <- curr.df
+  } else {
+    video.df <- bind_rows(video.df, curr.df)
+  }
+}  
+```
+
+```{r}
+video.df$contentDetails.videoId <- video.df$id
+video_final.df <- merge(x = upload.df, 
+                        y = video.df,
+                        by = "contentDetails.videoId")
+```
+
+```{r}
+
+write.csv(x = channel.df,
+          row.names = F,
+          file = "CS_Dojo_Channel.csv")
+write.csv(x = video_final.df,
+          row.names = F,
+          file = "CS_Dojo_Uploads.csv")
+
+```
+
+```{r}
+head(video_final.df[,c("snippet.channelTitle", "snippet.title", "contentDetails.duration", "statistics.viewCount", "statistics.likeCount")])
+```
+
+## Questions
+
+I wonder if I can use a LAPPLY to load multiple YouTube channels data.
+
+I wonder if I can make some of the code I use up top into functions.
+
+I need a tight research question.
+
+

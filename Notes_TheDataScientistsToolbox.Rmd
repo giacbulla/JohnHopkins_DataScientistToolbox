@@ -1,0 +1,34 @@
+---
+title: "Notes_TheDataScientistsToolbox"
+author: "Giacomo Zacchia"
+date: '2022-12-30'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Purpose
+
+This is a document for keeping notes for the John Hopkin's Class - The Data Scientist's Toolbox. I am skipping the first two weeks of information for now.
+
+## Week 3 - Version Control
+
+### Section 1 - Version Control Notes
+
+GIT is the most commonly used version control system. GitHub is the website. Repository is the master file. They are hosted on GitHub. Commit is the "save" function -- you typically add notes about what you changed. Push is where you send your edits. Pull is where you sync changes that others have made. Staging is the act of just sharing one change. Clone is a copy. Fork is a copy for personal copy.
+
+Best practices:
+- Purposeful, single issue commits
+- Informative commit messages
+- Pull and push often
+
+### Section 2 - Github and Git
+
+Sign up for GitHub.
+Install Git.
+Link Git & GitHub.
+
+### Section 3 - Github & RStudio
+
