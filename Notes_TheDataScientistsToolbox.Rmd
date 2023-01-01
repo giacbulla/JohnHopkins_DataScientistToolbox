@@ -33,3 +33,37 @@ Link Git & GitHub.
 ### Section 3 - Github & RStudio
 
 This document is now linked to Github.
+
+## Week 4 
+
+### Section 1 - RMarkdown
+
+[RMarkdown Cheat Sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+
+### Section 2 - Types 
+
+Types of Data Analysis (in order of difficulty)
+1) Descriptive - describing set of data
+2) Exploratory - Find relationships in data. Helps form hypotheses
+3) Inferential - Small data to say something about the population at large
+4) Predictive - Use current data to make predictions about future data
+5) Causal - see what happens to one variable when we manipulate another variable
+6) Mechanistic - understand the exact changes in variables that lead to exact changes in other variables
+
+### Section 3 - Experimental Design
+Formulate your question -> design experiment -> identify problems & source of error -> collect the data
+
+retractionwatch.com
+
+Independent variable - what we change (x-axis)
+Dependent varaible - what we don't change (y-axis)
+
+Confound are variables that may be the real cause
+
+Control Group - a group that is not subject to change.
+
+Randomized - randomly assign 
+
+Replicates - repeating an experiment with new sets of data
+
+P-Value - probability that your results are just as a result of chance
